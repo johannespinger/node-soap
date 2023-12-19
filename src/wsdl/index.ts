@@ -1082,6 +1082,7 @@ export class WSDL {
 
     if (Array.isArray(object.children) && object.children.length > 0) {
       for (i = 0, child; child = object.children[i]; i++) {
+        child.parentNameSpaceURI = object.parentNameSpaceURI;
         found = this.findChildSchemaObject(child, childName, backtrace);
         if (found) {
           break;
@@ -1092,9 +1093,10 @@ export class WSDL {
           const childNameSpace = baseQName.prefix === TNS_PREFIX ? '' : baseQName.prefix;
           childNsURI = child.xmlns[baseQName.prefix] || child.schemaXmlns[baseQName.prefix];
 
-          const foundBase = this.findSchemaType(baseQName.name, childNsURI);
+          const foundBase = this.findSchemaType(baseQName.name, childNsURI || child.parentNameSpaceURI);
 
           if (foundBase) {
+            foundBase.parentNameSpaceURI = childNsURI;
             found = this.findChildSchemaObject(foundBase, childName, backtrace);
 
             if (found) {
