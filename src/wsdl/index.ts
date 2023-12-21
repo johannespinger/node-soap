@@ -753,7 +753,7 @@ export class WSDL {
           return obj[name];
         }
         // Its the value of an item. Return it directly.
-        if (name === this.options.valueKey) {
+        if (name === this.options.valueKey && typeof obj[name] !== "object") {
           nsContext.popContext();
           return xmlEscape(obj[name]);
         }
@@ -776,6 +776,23 @@ export class WSDL {
         } else if (name[0] === ':') {
           emptyNonSubNameSpace = true;
           name = name.substr(1);
+        }
+
+        if (name === "$value" && Array.isArray(obj[name])) {
+          for (const item of obj[name]) {
+            value = this.objectToXML(
+              item,
+              name,
+              nsPrefix,
+              nsURI,
+              false,
+              null,
+              schemaObject,
+              nsContext
+            );
+            parts.push(value);
+          }
+          continue;
         }
 
         if (isFirst) {
