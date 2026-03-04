@@ -1122,6 +1122,19 @@ export class WSDL {
           const childNameSpace = baseQName.prefix === TNS_PREFIX ? '' : baseQName.prefix;
           childNsURI = child.xmlns[baseQName.prefix] || child.schemaXmlns[baseQName.prefix];
 
+          // When the base type has no explicit prefix (__tns__), the xmlns/schemaXmlns
+          // on the child element may not contain the mapping. In that case, search
+          // all schemas for the one that actually defines this type.
+          if (!childNsURI && baseQName.prefix === TNS_PREFIX) {
+            for (const nsURI in this.definitions.schemas) {
+              const s = this.definitions.schemas[nsURI];
+              if (s.complexTypes && s.complexTypes[baseQName.name]) {
+                childNsURI = nsURI;
+                break;
+              }
+            }
+          }
+
           const foundBase = this.findSchemaType(baseQName.name, childNsURI);
 
           if (foundBase) {
