@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns="urn:bar"
+            xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns:base="urn:base"
+            xmlns:bar="urn:bar"
+            targetNamespace="urn:bar"
+            elementFormDefault="qualified">
+    <xsd:import namespace="urn:base" schemaLocation="bar1.xsd"/>
+    <xsd:element name="FooRequest" type="bar:FooRequestType"/>
+    <xsd:complexType name="FooRequestType">
+        <xsd:complexContent>
+            <xsd:extension base="base:CommonRequestType">
+                <xsd:sequence>
+                    <xsd:element name="widgetId" type="xsd:string"/>
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+</xsd:schema>
